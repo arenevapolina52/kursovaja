@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Новости</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #4a5568;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: #718096;
+        }
+
+        /* Стили для фильтра категорий */
+        .categories-filter {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .filter-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .category-btn {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            padding: 12px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .category-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .category-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .category-btn.all {
+            background: #764ba2;
+            color: white;
+            border-color: #764ba2;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .news-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .news-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+        }
+
+        .news-category {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .news-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .news-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .news-body {
+            padding: 25px;
+        }
+
+        .news-content {
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .news-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #764ba2;
+        }
+
+        .btn-success {
+            background: #38a169;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.1rem;
+            color: #718096;
+        }
+
+        .actions-panel {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .current-category {
+            background: #c6f6d5;
+            color: #276749;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .page-title {
+                font-size: 2.5rem;
+            }
+            
+            .actions-panel {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="/" class="logo">
+                    <i class="fas fa-newspaper"></i>
+                    Новостной Агрегатор
+                </a>
+                <div class="nav-links" id="navLinks">
+                    <!-- Навигация будет обновлена через JavaScript -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1 class="page-title">Все новости</h1>
+            <p class="page-subtitle">Самые свежие материалы из разных источников</p>
+        </div>
+
+        <div class="actions-panel" id="actionsPanel">
+            <!-- Кнопки действий будут обновлены через JavaScript -->
+        </div>
+
+        <!-- ФИЛЬТР КАТЕГОРИЙ -->
+        <div class="categories-filter">
+            <div class="filter-title">
+                <i class="fas fa-filter"></i>
+                Фильтр по категориям:
+            </div>
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- Кнопки категорий будут загружены через JavaScript -->
+            </div>
+        </div>
+
+        <div id="currentCategory" class="current-category" style="display: none;"></div>
+
+        <div id="news-container" class="news-grid">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                Загрузка новостей...
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Получение токена из localStorage
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        // Проверка авторизации
+        function isAuthenticated() {
+            return !!getToken();
+        }
+
+        // Выход из системы
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/';
+        }
+
+        // Текущая выбранная категория
+        let currentCategory = 'все';
+
+        // Обновление навигации
+        function updateNavigation() {
+            const navLinks = document.getElementById('navLinks');
+            const token = getToken();
+            
+            if (token) {
+                navLinks.innerHTML = `
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Главная
+                    </a>
+                    <a href="/news" class="nav-link">
+                        <i class="fas fa-newspaper"></i>
+                        Новости
+                    </a>
+                    <a href="/create-news" class="nav-link">
+                        <i class="fas fa-plus"></i>
+                        Добавить новость
+                    </a>
+                    <div class="user-info">
+                        <i class="fas fa-user"></i>
+                        <span>Вы вошли</span>
+                    </div>
+                    <a href="#" onclick="logout()" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Выйти
+                    </a>
+                `;
+            } else {
+                navLinks.innerHTML = `
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Главная
+                    </a>
+                    <a href="/news" class="nav-link">
+                        <i class="fas fa-newspaper"></i>
+                        Новости
+                    </a>
+                    <a href="/login" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Войти
+                    </a>
+                    <a href="/register" class="nav-link">
+                        <i class="fas fa-user-plus"></i>
+                        Регистрация
+                    </a>
+                `;
+            }
+        }
+
+        // Обновление панели действий
+        function updateActionsPanel() {
+            const actionsPanel = document.getElementById('actionsPanel');
+            const token = getToken();
+            
+            if (token) {
+                actionsPanel.innerHTML = `
+                    <button onclick="parseRealNews()" class="btn">
+                        <i class="fas fa-rss"></i>
+                        Парсить реальные новости
+                    </button>
+                    <a href="/create-news" class="btn btn-success">
+                        <i class="fas fa-plus"></i>
+                        Добавить новость
+                    </a>
+                    <button onclick="showPersonalized()" class="btn btn-secondary">
+                        <i class="fas fa-user"></i>
+                        Для меня
+                    </button>
+                `;
+            } else {
+                actionsPanel.innerHTML = `
+                    <a href="/login" class="btn btn-secondary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Войти для парсинга новостей
+                    </a>
+                    <a href="/register" class="btn btn-outline">
+                        <i class="fas fa-user-plus"></i>
+                        Зарегистрироваться
+                    </a>
+                `;
+            }
+        }
+
+        // Загрузка категорий для фильтра
+        async function loadCategoriesFilter() {
+            try {
+                const response = await fetch('/api/news/');
+                const news = await response.json();
+                
+                // Получаем уникальные категории из новостей
+                const categories = ['все'];
+                news.forEach(article => {
+                    if (article.category && !categories.includes(article.category)) {
+                        categories.push(article.category);
+                    }
+                });
+                
+                // Создаем кнопки категорий
+                const categoriesGrid = document.getElementById('categoriesGrid');
+                let html = '';
+                
+                categories.forEach(category => {
+                    const isActive = currentCategory === category;
+                    const btnClass = category === 'все' ? 'category-btn all' : 'category-btn';
+                    const activeClass = isActive ? ' active' : '';
+                    
+                    html += `
+                        <div class="${btnClass}${activeClass}" onclick="filterByCategory('${category}')">
+                            ${category === 'все' ? '📰 Все новости' : `📁 ${category}`}
+                        </div>
+                    `;
+                });
+                
+                categoriesGrid.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        // Загрузка новостей
+        async function loadNews() {
+            try {
+                let url = '/api/news/';
+                
+                // Если выбрана конкретная категория (не "все")
+                if (currentCategory !== 'все') {
+                    url = `/api/news/category/${currentCategory}`;
+                }
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const news = await response.json();
+                displayNews(news);
+                
+            } catch (error) {
+                console.error('Error loading news:', error);
+                document.getElementById('news-container').innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Ошибка загрузки новостей: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Отображение новостей
+        function displayNews(news) {
+            const container = document.getElementById('news-container');
+            const currentCategoryElement = document.getElementById('currentCategory');
+            
+            // Показываем текущую категорию
+            if (currentCategory !== 'все') {
+                currentCategoryElement.style.display = 'block';
+                currentCategoryElement.innerHTML = `
+                    <i class="fas fa-filter"></i>
+                    Показываем новости категории: <strong>${currentCategory}</strong>
+                    <button onclick="clearFilter()" style="margin-left: 15px; background: #e53e3e; color: white; border: none; padding: 5px 10px; border-radius: 10px; cursor: pointer;">
+                        <i class="fas fa-times"></i> Сбросить
+                    </button>
+                `;
+            } else {
+                currentCategoryElement.style.display = 'none';
+            }
+            
+            if (news.length === 0) {
+                container.innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-inbox"></i>
+                        ${
+                            currentCategory !== 'все' 
+                            ? `Нет новостей в категории "${currentCategory}"`
+                            : 'Новостей пока нет. Нажмите "Парсить реальные новости" или "Добавить новость".'
+                        }
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            news.forEach(article => {
+                html += `
+                    <div class="news-card">
+                        <div class="news-header">
+                            <span class="news-category">${article.category || 'Общее'}</span>
+                            <h3 class="news-title">${article.title}</h3>
+                            <div class="news-meta">
+                                <i class="fas fa-calendar"></i>
+                                ${new Date(article.published_at).toLocaleDateString('ru-RU')}
+                                <i class="fas fa-source" style="margin-left: 15px;"></i>
+                                ${article.source}
+                            </div>
+                        </div>
+                        <div class="news-body">
+                            <p class="news-content">${article.summary || 'Описание отсутствует'}</p>
+                            <div class="news-footer">
+                                <a href="${article.url}" target="_blank" class="btn">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Читать оригинал
+                                </a>
+                                ${isAuthenticated() ? `
+                                    <button onclick="deleteNews(${article.id})" class="btn" style="background: #e53e3e;">
+                                        <i class="fas fa-trash"></i>
+                                        Удалить
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Фильтрация по категории
+        function filterByCategory(category) {
+            currentCategory = category;
+            
+            // Обновляем активные кнопки
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Активируем выбранную кнопку
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                if (btn.textContent.includes(category === 'все' ? 'Все новости' : category)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            loadNews();
+        }
+
+        // Сброс фильтра
+        function clearFilter() {
+            filterByCategory('все');
+        }
+
+        // Парсинг реальных новостей
+        async function parseRealNews() {
+            if (!isAuthenticated()) {
+                alert('Для парсинга новостей необходимо войти в систему');
+                window.location.href = '/login';
+                return;
+            }
+            
+            try {
+                const token = getToken();
+                const response = await fetch('/api/parse-real-news/', { 
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка парсинга');
+                }
+                
+                const result = await response.json();
+                alert(`✅ ${result.message}\nДобавлено новостей: ${result.count}`);
+                
+                // Перезагружаем категории и новости
+                loadCategoriesFilter();
+                loadNews();
+                
+            } catch (error) {
+                alert('❌ Ошибка парсинга новостей: ' + error.message);
+            }
+        }
+
+        // Удаление новости
+        async function deleteNews(newsId) {
+            if (!confirm('Вы уверены, что хотите удалить эту новость?')) {
+                return;
+            }
+            
+            try {
+                const token = getToken();
+                const response = await fetch(`/api/news/${newsId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка удаления');
+                }
+                
+                alert('✅ Новость успешно удалена');
+                loadNews();
+                
+            } catch (error) {
+                alert('❌ Ошибка удаления новости: ' + error.message);
+            }
+        }
+
+        // Персонализированные новости
+        async function showPersonalized() {
+            if (!isAuthenticated()) {
+                alert('Для просмотра персонализированных новостей необходимо войти в систему');
+                window.location.href = '/login';
+                return;
+            }
+            
+            try {
+                const token = getToken();
+                const response = await fetch('/api/personalized-news/', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки персонализированных новостей');
+                }
+                
+                const news = await response.json();
+                
+                const container = document.getElementById('news-container');
+                if (news.length === 0) {
+                    container.innerHTML = `
+                        <div class="loading">
+                            <i class="fas fa-inbox"></i>
+                            Нет персонализированных новостей. Система показывает технологические новости по умолчанию.
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '<h3 style="text-align: center; margin-bottom: 30px; color: #2d3748;">🎯 Персонализированная лента (Технологии)</h3>';
+                news.forEach(article => {
+                    html += `
+                        <div class="news-card">
+                            <div class="news-header">
+                                <span class="news-category">${article.category || 'Общее'} ⭐</span>
+                                <h3 class="news-title">${article.title}</h3>
+                                <div class="news-meta">
+                                    <i class="fas fa-calendar"></i>
+                                    ${new Date(article.published_at).toLocaleDateString('ru-RU')}
+                                    <i class="fas fa-source" style="margin-left: 15px;"></i>
+                                    ${article.source}
+                                </div>
+                            </div>
+                            <div class="news-body">
+                                <p class="news-content">${article.summary || 'Описание отсутствует'}</p>
+                                <div class="news-footer">
+                                    <a href="${article.url}" target="_blank" class="btn">
+                                        <i class="fas fa-external-link-alt"></i>
+                                        Читать оригинал
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+                
+            } catch (error) {
+                alert('❌ Ошибка загрузки персонализированных новостей: ' + error.message);
+            }
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavigation();
+            updateActionsPanel();
+            loadCategoriesFilter();
+            loadNews();
+        });
+    </script>
+</body>
+</html> 
