@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои предпочтения</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #4a5568;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: #718096;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .preferences-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .category-item {
+            position: relative;
+        }
+
+        .category-checkbox {
+            display: none;
+        }
+
+        .category-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px 20px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-align: center;
+            color: #4a5568;
+        }
+
+        .category-label:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-3px);
+        }
+
+        .category-checkbox:checked + .category-label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .checkbox-icon {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            opacity: 0.7;
+        }
+
+        .category-checkbox:checked + .category-label .checkbox-icon {
+            opacity: 1;
+        }
+
+        .keywords-section {
+            margin: 30px 0;
+        }
+
+        .keywords-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .keywords-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+        }
+
+        .keywords-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .keywords-input::placeholder {
+            color: #a0aec0;
+        }
+
+        .keywords-hint {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-top: 8px;
+            margin-left: 5px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #e53e3e;
+            border: 2px solid #e53e3e;
+        }
+
+        .btn-outline:hover {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .message {
+            display: none;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .message.success {
+            background: #c6f6d5;
+            color: #276749;
+            border: 1px solid #9ae6b4;
+        }
+
+        .message.error {
+            background: #fed7d7;
+            color: #c53030;
+            border: 1px solid #fc8181;
+        }
+
+        .message.warning {
+            background: #feebc8;
+            color: #d69e2e;
+            border: 1px solid #fbd38d;
+        }
+
+        .current-preferences {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-top: 40px;
+        }
+
+        .current-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pref-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .pref-tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .delete-btn {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-style: italic;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .preferences-card {
+                padding: 25px;
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+            
+            .nav-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-label {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">
+                <i class="fas fa-newspaper"></i>
+                Новостной Агрегатор
+            </a>
+            <div class="nav-links" id="navLinks">
+                <!-- Навигация будет обновлена через JavaScript -->
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Мои предпочтения</h1>
+            <p class="page-subtitle">Выберите интересующие категории новостей для персонализированной ленты</p>
+        </div>
+
+        <a href="/news" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Вернуться к новостям
+        </a>
+
+        <div class="preferences-card">
+            <h2 style="margin-bottom: 25px; color: #2d3748; font-size: 1.4rem;">
+                <i class="fas fa-sliders-h" style="margin-right: 10px; color: #667eea;"></i>
+                Настройка категорий
+            </h2>
+
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- Категории будут загружены через JavaScript -->
+            </div>
+
+            <div class="keywords-section">
+                <div class="keywords-title">
+                    <i class="fas fa-key"></i>
+                    Ключевые слова
+                </div>
+                <input type="text" 
+                       id="keywordsInput" 
+                       class="keywords-input" 
+                       placeholder="Введите ключевые слова через запятую, например: Python, ИИ, программирование">
+                <div class="keywords-hint">
+                    Система будет учитывать эти слова при подборе новостей
+                </div>
+            </div>
+
+            <div id="message" class="message"></div>
+
+            <div class="actions">
+                <button onclick="savePreferences()" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Сохранить предпочтения
+                </button>
+                <button onclick="resetForm()" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i>
+                    Сбросить
+                </button>
+                <button onclick="deleteAllPreferences()" class="btn btn-outline">
+                    <i class="fas fa-trash"></i>
+                    Удалить все
+                </button>
+            </div>
+        </div>
+
+        <div class="current-preferences">
+            <div class="current-title">
+                <i class="fas fa-star"></i>
+                Текущие предпочтения
+            </div>
+            <div class="pref-list" id="currentPrefs">
+                <!-- Предпочтения будут загружены через JavaScript -->
+            </div>
+            <div id="noPreferences" class="empty-message">
+                Нет сохраненных предпочтений
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Получение токена из localStorage
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        // Проверка авторизации
+        function isAuthenticated() {
+            return !!getToken();
+        }
+
+        // Обновление навигации
+        function updateNavigation() {
+            const navLinks = document.getElementById('navLinks');
+            const token = getToken();
+            
+            if (token) {
+                navLinks.innerHTML = `
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Главная
+                    </a>
+                    <a href="/news" class="nav-link">
+                        <i class="fas fa-newspaper"></i>
+                        Новости
+                    </a>
+                    <a href="/create-news" class="nav-link">
+                        <i class="fas fa-plus"></i>
+                        Добавить новость
+                    </a>
+                    <a href="/preferences" class="nav-link" style="background: #667eea; color: white;">
+                        <i class="fas fa-user-cog"></i>
+                        Предпочтения
+                    </a>
+                    <a href="#" onclick="logout()" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Выйти
+                    </a>
+                `;
+            } else {
+                navLinks.innerHTML = `
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Главная
+                    </a>
+                    <a href="/news" class="nav-link">
+                        <i class="fas fa-newspaper"></i>
+                        Новости
+                    </a>
+                    <a href="/login" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Войти
+                    </a>
+                    <a href="/register" class="nav-link">
+                        <i class="fas fa-user-plus"></i>
+                        Регистрация
+                    </a>
+                `;
+                // Перенаправляем на страницу входа, если не авторизован
+                window.location.href = '/login';
+            }
+        }
+
+        // Выход из системы
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/';
+        }
+
+        // Показать сообщение
+        function showMessage(text, type = 'info') {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.style.display = 'block';
+            messageDiv.className = `message ${type}`;
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Загрузить доступные категории
+        function loadCategories() {
+            const categories = ["технологии", "политика", "спорт", "экономика", "наука", "культура", "общее"];
+            const categoriesGrid = document.getElementById('categoriesGrid');
+            
+            let html = '';
+            categories.forEach(category => {
+                html += `
+                    <div class="category-item">
+                        <input type="checkbox" 
+                               id="${category}" 
+                               value="${category}" 
+                               class="category-checkbox">
+                        <label for="${category}" class="category-label">
+                            <i class="fas fa-check checkbox-icon"></i>
+                            ${category.charAt(0).toUpperCase() + category.slice(1)}
+                        </label>
+                    </div>
+                `;
+            });
+            categoriesGrid.innerHTML = html;
+        }
+
+        // Загрузить текущие предпочтения
+        async function loadPreferences() {
+            const token = getToken();
+            
+            if (!token) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/preferences/', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                if (response.ok) {
+                    const preferences = await response.json();
+                    displayPreferences(preferences);
+                }
+            } catch (error) {
+                console.error('Error loading preferences:', error);
+            }
+        }
+
+        // Отобразить предпочтения
+        function displayPreferences(preferences) {
+            const container = document.getElementById('currentPrefs');
+            const noPrefs = document.getElementById('noPreferences');
+            
+            if (preferences.length === 0) {
+                noPrefs.style.display = 'block';
+                container.innerHTML = '';
+                return;
+            }
+            
+            noPrefs.style.display = 'none';
+            
+            let html = '';
+            preferences.forEach(pref => {
+                html += `
+                    <div class="pref-tag" id="pref-${pref.id}">
+                        ${pref.category.charAt(0).toUpperCase() + pref.category.slice(1)}
+                        ${pref.keyword ? `<span style="font-size: 0.8em; opacity: 0.9;">(${pref.keyword})</span>` : ''}
+                        <button onclick="deletePreference('${pref.id}')" class="delete-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Сохранение предпочтений
+        async function savePreferences() {
+            const checkboxes = document.querySelectorAll('.category-checkbox:checked');
+            const categories = Array.from(checkboxes).map(cb => cb.value);
+            const keywords = document.getElementById('keywordsInput').value.trim();
+            
+            if (categories.length === 0) {
+                showMessage('Выберите хотя бы одну категорию', 'error');
+                return;
+            }
+            
+            const token = getToken();
+            
+            if (!token) {
+                showMessage('Ошибка авторизации. Пожалуйста, войдите заново.', 'error');
+                window.location.href = '/login';
+                return;
+            }
+            
+            showMessage('Сохранение предпочтений...', 'warning');
+            
+            const results = [];
+            for (const category of categories) {
+                try {
+                    const response = await fetch('/api/preferences/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({
+                            category: category,
+                            keyword: keywords || null
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        results.push({category, success: true, message: data.message});
+                    } else {
+                        const errorText = await response.text();
+                        results.push({category, success: false, error: errorText});
+                    }
+                } catch (error) {
+                    results.push({category, success: false, error: error.message});
+                }
+            }
+            
+            const successCount = results.filter(r => r.success).length;
+            
+            if (successCount > 0) {
+                showMessage(`Предпочтения сохранены! Успешно: ${successCount} из ${categories.length}`, 'success');
+                setTimeout(() => {
+                    loadPreferences();
+                }, 1000);
+            } else {
+                showMessage('Ошибка при сохранении предпочтений', 'error');
+                console.error('Details:', results);
+            }
+        }
+
+        // Удаление предпочтения
+        async function deletePreference(prefId) {
+            if (!confirm('Удалить это предпочтение?')) return;
+            
+            const token = getToken();
+            
+            if (!token) {
+                showMessage('Ошибка авторизации', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/preferences/${prefId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                if (response.ok) {
+                    showMessage('Предпочтение удалено', 'success');
+                    loadPreferences();
+                } else {
+                    showMessage('Ошибка при удалении', 'error');
+                }
+            } catch (error) {
+                showMessage(`Ошибка: ${error.message}`, 'error');
+            }
+        }
+
+        // Удаление всех предпочтений
+        async function deleteAllPreferences() {
+            if (!confirm('Удалить все предпочтения?')) return;
+            
+            const token = getToken();
+            
+            if (!token) {
+                showMessage('Ошибка авторизации', 'error');
+                return;
+            }
+            
+            try {
+                // Получаем все предпочтения
+                const response = await fetch('/api/preferences/', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка получения предпочтений');
+                }
+                
+                const preferences = await response.json();
+                
+                // Удаляем каждое предпочтение
+                for (const pref of preferences) {
+                    await fetch(`/api/preferences/${pref.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+                }
+                
+                showMessage('Все предпочтения удалены', 'success');
+                loadPreferences();
+                
+            } catch (error) {
+                showMessage(`Ошибка: ${error.message}`, 'error');
+            }
+        }
+
+        // Сброс формы
+        function resetForm() {
+            if (!confirm('Сбросить все выбранные категории?')) return;
+            
+            const checkboxes = document.querySelectorAll('.category-checkbox');
+            checkboxes.forEach(cb => cb.checked = false);
+            document.getElementById('keywordsInput').value = '';
+            
+            showMessage('Форма сброшена', 'success');
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavigation();
+            loadCategories();
+            loadPreferences();
+            
+            // Проверяем авторизацию
+            if (!isAuthenticated()) {
+                showMessage('Для доступа к этой странице необходимо войти в систему', 'error');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

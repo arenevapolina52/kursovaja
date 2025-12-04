@@ -10,7 +10,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     username = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
-    is_active = Column(Boolean, default=True)
+    is_active = Column(Boolean, default=True)  # ✅ Добавьте это поле
     created_at = Column(DateTime, default=datetime.utcnow)
 
 class NewsArticle(Base):

@@ -170,19 +170,8 @@
                     <i class="fas fa-newspaper"></i>
                     Новостной Агрегатор
                 </a>
-                <div class="nav-links">
-                    <a href="/" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        Главная
-                    </a>
-                    <a href="/news" class="nav-link">
-                        <i class="fas fa-newspaper"></i>
-                        Новости
-                    </a>
-                    <a href="#" onclick="logout()" class="nav-link">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Выйти
-                    </a>
+                <div class="nav-links" id="navLinks">
+                    <!-- Навигация будет обновлена через JavaScript -->
                 </div>
             </div>
         </div>
@@ -249,6 +238,62 @@
             }, 5000);
         }
 
+        // Обновление навигации
+        function updateNavigation() {
+            const navLinks = document.getElementById('navLinks');
+            const token = localStorage.getItem('token');
+            
+            if (token) {
+                navLinks.innerHTML = `
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Главная
+                    </a>
+                    <a href="/news" class="nav-link">
+                        <i class="fas fa-newspaper"></i>
+                        Новости
+                    </a>
+                    <a href="/create-news" class="nav-link">
+                        <i class="fas fa-plus"></i>
+                        Добавить новость
+                    </a>
+                    <a href="/preferences" class="nav-link">
+                        <i class="fas fa-user-cog"></i>
+                        Предпочтения
+                    </a>
+                    <a href="#" onclick="logout()" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Выйти
+                    </a>
+                `;
+            } else {
+                navLinks.innerHTML = `
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Главная
+                    </a>
+                    <a href="/news" class="nav-link">
+                        <i class="fas fa-newspaper"></i>
+                        Новости
+                    </a>
+                    <a href="/login" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Войти
+                    </a>
+                    <a href="/register" class="nav-link">
+                        <i class="fas fa-user-plus"></i>
+                        Регистрация
+                    </a>
+                `;
+            }
+        }
+
+        // Выход из системы
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/';
+        }
+
         document.getElementById('createNewsForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -301,16 +346,12 @@
             }
         });
 
-        function logout() {
-            localStorage.removeItem('token');
-            window.location.href = '/';
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
             const token = localStorage.getItem('token');
             if (!token) {
                 window.location.href = '/login';
             }
+            updateNavigation();
         });
     </script>
 </body>

@@ -237,6 +237,14 @@
             background: #38a169;
         }
 
+        .btn-warning {
+            background: #ed8936;
+        }
+
+        .btn-info {
+            background: #4299e1;
+        }
+
         .btn-outline {
             background: transparent;
             color: #667eea;
@@ -279,6 +287,26 @@
             font-weight: 600;
             margin-bottom: 20px;
             text-align: center;
+        }
+
+        .person-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .person-info h3 {
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        .person-info p {
+            margin-bottom: 15px;
+            opacity: 0.9;
         }
 
         @media (max-width: 768px) {
@@ -325,6 +353,26 @@
         <div class="page-header">
             <h1 class="page-title">Все новости</h1>
             <p class="page-subtitle">Самые свежие материалы из разных источников</p>
+        </div>
+
+        <!-- Информация о персонализации -->
+        <div id="personalizationInfo" class="person-info" style="display: none;">
+            <h3><i class="fas fa-user-cog"></i> Персонализация новостей</h3>
+            <p id="preferencesStatus">Настройте ваши предпочтения для персонализированной ленты</p>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="goToPreferences()" class="btn btn-success">
+                    <i class="fas fa-sliders-h"></i>
+                    Настроить предпочтения
+                </button>
+                <button onclick="showPersonalized()" class="btn btn-secondary">
+                    <i class="fas fa-user"></i>
+                    Показать для меня
+                </button>
+                <button onclick="hidePersonalizationInfo()" class="btn btn-outline" style="color: white; border-color: white;">
+                    <i class="fas fa-times"></i>
+                    Скрыть
+                </button>
+            </div>
         </div>
 
         <div class="actions-panel" id="actionsPanel">
@@ -391,6 +439,10 @@
                         <i class="fas fa-plus"></i>
                         Добавить новость
                     </a>
+                    <a href="/preferences" class="nav-link">
+                        <i class="fas fa-user-cog"></i>
+                        Предпочтения
+                    </a>
                     <div class="user-info">
                         <i class="fas fa-user"></i>
                         <span>Вы вошли</span>
@@ -441,6 +493,10 @@
                         <i class="fas fa-user"></i>
                         Для меня
                     </button>
+                    <button onclick="goToPreferences()" class="btn" style="background: #ed8936;">
+                        <i class="fas fa-sliders-h"></i>
+                        Мои предпочтения
+                    </button>
                 `;
             } else {
                 actionsPanel.innerHTML = `
@@ -454,6 +510,71 @@
                     </a>
                 `;
             }
+        }
+
+        // Перейти на страницу предпочтений
+        function goToPreferences() {
+            const token = getToken();
+            if (token) {
+                window.location.href = '/preferences';
+            } else {
+                alert('Для настройки предпочтений необходимо войти в систему');
+                window.location.href = '/login';
+            }
+        }
+
+        // Проверить предпочтения пользователя
+        async function checkPreferences() {
+            const token = getToken();
+            
+            if (!token) {
+                hidePersonalizationInfo();
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/preferences/', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        localStorage.removeItem('token');
+                        hidePersonalizationInfo();
+                        return;
+                    }
+                    throw new Error('Ошибка загрузки предпочтений');
+                }
+                
+                const preferences = await response.json();
+                
+                if (preferences.length === 0) {
+                    showPersonalizationInfo('У вас нет сохраненных предпочтений. Настройте их для персонализированной ленты!');
+                } else {
+                    hidePersonalizationInfo();
+                }
+                
+            } catch (error) {
+                console.error('Error checking preferences:', error);
+                hidePersonalizationInfo();
+            }
+        }
+
+        // Показать информацию о персонализации
+        function showPersonalizationInfo(message) {
+            const infoDiv = document.getElementById('personalizationInfo');
+            const statusText = document.getElementById('preferencesStatus');
+            
+            statusText.textContent = message;
+            infoDiv.style.display = 'block';
+        }
+
+        // Скрыть информацию о персонализации
+        function hidePersonalizationInfo() {
+            const infoDiv = document.getElementById('personalizationInfo');
+            infoDiv.style.display = 'none';
         }
 
         // Загрузка категорий для фильтра
@@ -702,18 +823,18 @@
                     container.innerHTML = `
                         <div class="loading">
                             <i class="fas fa-inbox"></i>
-                            Нет персонализированных новостей. Система показывает технологические новости по умолчанию.
+                            Нет персонализированных новостей. Настройте ваши предпочтения в разделе "Мои предпочтения".
                         </div>
                     `;
                     return;
                 }
                 
-                let html = '<h3 style="text-align: center; margin-bottom: 30px; color: #2d3748;">🎯 Персонализированная лента (Технологии)</h3>';
+                let html = '<h3 style="text-align: center; margin-bottom: 30px; color: #2d3748;"><i class="fas fa-user-cog"></i> Персонализированная лента</h3>';
                 news.forEach(article => {
                     html += `
                         <div class="news-card">
                             <div class="news-header">
-                                <span class="news-category">${article.category || 'Общее'} ⭐</span>
+                                <span class="news-category">${article.category || 'Общее'} <i class="fas fa-star" style="font-size: 0.8em;"></i></span>
                                 <h3 class="news-title">${article.title}</h3>
                                 <div class="news-meta">
                                     <i class="fas fa-calendar"></i>
@@ -729,6 +850,10 @@
                                         <i class="fas fa-external-link-alt"></i>
                                         Читать оригинал
                                     </a>
+                                    <button onclick="goToPreferences()" class="btn btn-info">
+                                        <i class="fas fa-sliders-h"></i>
+                                        Настроить
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -747,7 +872,14 @@
             updateActionsPanel();
             loadCategoriesFilter();
             loadNews();
+            
+            // Проверяем авторизацию и показываем информацию о персонализации
+            if (isAuthenticated()) {
+                setTimeout(() => {
+                    checkPreferences();
+                }, 1000);
+            }
         });
     </script>
 </body>
-</html> 
+</html>

@@ -11,7 +11,7 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    is_active: bool
+    is_active: bool  # ✅ Добавьте это поле
     created_at: datetime
     
     class Config:
@@ -23,7 +23,7 @@ class Token(BaseModel):
 
 class NewsArticleBase(BaseModel):
     title: str
-    summary: str  # Изменено с content на summary
+    summary: str
     source: str
     category: str
     url: str
@@ -43,6 +43,22 @@ class NewsArticleUpdate(BaseModel):
 class NewsArticle(NewsArticleBase):
     id: int
     is_active: bool
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+# ДОБАВЬТЕ ЭТИ НОВЫЕ МОДЕЛИ ДЛЯ ПРЕДПОЧТЕНИЙ
+class UserPreferenceBase(BaseModel):
+    category: str
+    keyword: Optional[str] = None
+
+class UserPreferenceCreate(UserPreferenceBase):
+    pass
+
+class UserPreference(UserPreferenceBase):
+    id: int
+    user_id: int
     created_at: datetime
     
     class Config:
