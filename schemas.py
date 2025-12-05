@@ -11,7 +11,7 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    is_active: bool  # ✅ Добавьте это поле
+    is_active: bool 
     created_at: datetime
     
     class Config:
