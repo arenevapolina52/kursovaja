@@ -17,7 +17,7 @@ def add_test_data():
             )
             db.add(test_user)
             print("✅ Добавлен тестовый пользователь")
-        и
+        
         test_news = [
             {
                 "title": "Прорыв в искусственном интеллекте",
