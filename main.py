@@ -52,7 +52,6 @@ async def news_page(request: Request, db_session: Session = Depends(db.get_db)):
 async def create_news_page(request: Request):
     return templates.TemplateResponse("create_news.html", {"request": request})
 
-# ДОБАВЬТЕ НОВЫЙ ЭНДПОИНТ ДЛЯ СТРАНИЦЫ ПРЕДПОЧТЕНИЙ
 @app.get("/preferences", response_class=HTMLResponse)
 async def preferences_page(request: Request, db_session: Session = Depends(db.get_db)):
     """Страница управления предпочтениями"""
@@ -228,18 +227,15 @@ def get_news_by_category(category: str, db_session: Session = Depends(db.get_db)
         models.NewsArticle.is_active == True
     ).all()
 
-# ОБНОВИТЕ ЭНДПОИНТ ПЕРСОНАЛИЗИРОВАННЫХ НОВОСТЕЙ
 @app.get("/api/personalized-news/", response_model=List[sch.NewsArticle], summary="Персонализированные новости")
 def get_personalized_news(db_session: Session = Depends(db.get_db),
                         current_user: sch.User = Depends(auth.get_current_active_user)):
     """Получить персонализированную ленту новостей"""
     
-    # Получаем предпочтения пользователя
     preferences = db_session.query(models.UserPreference).filter(
         models.UserPreference.user_id == current_user.id
     ).all()
     
-    # Если есть предпочтения - фильтруем по ним
     if preferences:
         categories = [pref.category for pref in preferences if pref.category]
         if categories:
@@ -248,12 +244,10 @@ def get_personalized_news(db_session: Session = Depends(db.get_db),
                 models.NewsArticle.is_active == True
             ).order_by(models.NewsArticle.published_at.desc()).limit(20).all()
     
-    # Если нет предпочтений - возвращаем все новости
     return db_session.query(models.NewsArticle).filter(
         models.NewsArticle.is_active == True
     ).order_by(models.NewsArticle.published_at.desc()).limit(20).all()
 
-# ДОБАВЬТЕ НОВЫЕ ЭНДПОИНТЫ ДЛЯ УПРАВЛЕНИЯ ПРЕДПОЧТЕНИЯМИ
 @app.post("/api/preferences/", summary="Добавить предпочтение")
 def add_preference(
     preference_data: sch.UserPreferenceCreate,
@@ -265,7 +259,6 @@ def add_preference(
     category = preference_data.category
     keyword = preference_data.keyword
     
-    # Проверяем валидность категории
     valid_categories = ["технологии", "политика", "спорт", "экономика", "наука", "культура", "общее"]
     if category not in valid_categories:
         raise HTTPException(
@@ -273,18 +266,15 @@ def add_preference(
             detail=f"Недопустимая категория. Допустимые: {', '.join(valid_categories)}"
         )
     
-    # Проверяем, есть ли уже такое предпочтение
     existing = db_session.query(models.UserPreference).filter(
         models.UserPreference.user_id == current_user.id,
         models.UserPreference.category == category
     ).first()
     
     if existing:
-        # Обновляем существующее
         existing.keyword = keyword
         message = "Предпочтение обновлено"
     else:
-        # Создаем новое
         preference = models.UserPreference(
             user_id=current_user.id,
             category=category,
@@ -307,8 +297,8 @@ def get_preferences(db_session: Session = Depends(db.get_db),
 
 @app.delete("/api/preferences/{pref_id}", summary="Удалить предпочтение")
 def delete_preference(pref_id: int,
-                     db_session: Session = Depends(db.get_db),
-                     current_user: sch.User = Depends(auth.get_current_active_user)):
+                        db_session: Session = Depends(db.get_db),
+                        current_user: sch.User = Depends(auth.get_current_active_user)):
     """Удалить предпочтение пользователя"""
     
     preference = db_session.query(models.UserPreference).filter(

@@ -48,7 +48,6 @@ class NewsArticle(NewsArticleBase):
     class Config:
         from_attributes = True
 
-# ДОБАВЬТЕ ЭТИ НОВЫЕ МОДЕЛИ ДЛЯ ПРЕДПОЧТЕНИЙ
 class UserPreferenceBase(BaseModel):
     category: str
     keyword: Optional[str] = None

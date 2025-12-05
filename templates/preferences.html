@@ -773,7 +773,6 @@
             }
         }
 
-        // Сброс формы
         function resetForm() {
             if (!confirm('Сбросить все выбранные категории?')) return;
             
@@ -784,13 +783,11 @@
             showMessage('Форма сброшена', 'success');
         }
 
-        // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
             updateNavigation();
             loadCategories();
             loadPreferences();
             
-            // Проверяем авторизацию
             if (!isAuthenticated()) {
                 showMessage('Для доступа к этой странице необходимо войти в систему', 'error');
                 setTimeout(() => {

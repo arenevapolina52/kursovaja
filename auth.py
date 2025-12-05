@@ -16,13 +16,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
-# ---------------------------------------------------------
-#              BCRYPT FUNCTIONS (only bcrypt)
-# ---------------------------------------------------------
 
 def hash_password(password: str) -> str:
     """Hash password using bcrypt."""
-    # bcrypt has limit of 72 bytes → truncate to avoid ValueError
     password_bytes = password.encode("utf-8")[:72]
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(password_bytes, salt)
@@ -36,9 +32,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return bcrypt.checkpw(password_bytes, hashed_bytes)
 
 
-# ---------------------------------------------------------
-#                    USER FUNCTIONS
-# ---------------------------------------------------------
 
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
@@ -87,10 +80,6 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_user
 
 
-# ---------------------------------------------------------
-#                    JWT TOKEN FUNCTIONS
-# ---------------------------------------------------------
-
 def create_access_token(data: dict, expires_delta: timedelta = None):
     """Generate JWT token."""
     to_encode = data.copy()
@@ -102,10 +91,6 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-
-# ---------------------------------------------------------
-#                    CURRENT USER DEPENDS
-# ---------------------------------------------------------
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme),

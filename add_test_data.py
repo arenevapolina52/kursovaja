@@ -8,19 +8,16 @@ def add_test_data():
     try:
         print("🔄 Добавление тестовых данных...")
         
-        # Проверяем, нет ли уже пользователя
         existing_user = db.query(models.User).filter(models.User.email == "test@example.com").first()
         if not existing_user:
-            # Добавляем тестового пользователя с ХЕШИРОВАННЫМ паролем
             test_user = models.User(
                 email="test@example.com",
                 username="testuser", 
-                hashed_password=get_password_hash("password123")  # ✅ Теперь хешированный
+                hashed_password=get_password_hash("password123")  
             )
             db.add(test_user)
             print("✅ Добавлен тестовый пользователь")
-        
-        # Добавляем тестовые новости
+        и
         test_news = [
             {
                 "title": "Прорыв в искусственном интеллекте",
